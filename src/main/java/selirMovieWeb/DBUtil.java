@@ -9,85 +9,41 @@ import java.sql.Statement;
 
 public class DBUtil {
 
-	private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
-	private static final String DB_CONNECTION = "jdbc:mysql://localhost:3306/filmeSelir";
-	private static final String DB_USER = "root";
-	private static final String DB_PASSWORD = "";
+	// Use the new driver class (MySQL Connector/J 8+)
+	private static final String DB_DRIVER     = "com.mysql.cj.jdbc.Driver";
+	private static final String DB_CONNECTION = "jdbc:mysql://localhost:3306/filmeselir?useSSL=false&serverTimezone=UTC";
+	private static final String DB_USER       = "root";
+	private static final String DB_PASSWORD   = "";
 
-	// metoda care creaza conexiunea
+	/** Open and return a new connection. Caller must close it. */
 	public static Connection getConnection() {
 		Connection conn = null;
 		try {
 			Class.forName(DB_DRIVER);
 			conn = DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
+		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		return conn;
 	}
 
-	// metoda care inchide conexiunea la DB - cu Statement
+	/** Close ResultSet, Statement, and Connection silently. */
 	public static void closeAll(Connection dbConnection, Statement statement, ResultSet resultSet) {
-
-		try {
-			if (resultSet != null)
-				resultSet.close();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-		}
-
-		try {
-			if (statement != null)
-				statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-		}
-
-		try {
-			if (dbConnection != null)
-				dbConnection.close();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-
-		}
-
+		closeQuietly(resultSet);
+		closeQuietly(statement);
+		closeQuietly(dbConnection);
 	}
 
-	// metoda care inchide conexiunea la DB - cu PreparedStatement
+	/** Close ResultSet, PreparedStatement, and Connection silently. */
 	public static void closeAll(Connection dbConnection, PreparedStatement pstmt, ResultSet resultSet) {
-
-		try {
-			if (resultSet != null)
-				resultSet.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-		}
-
-		try {
-			if (pstmt != null)
-				pstmt.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-		}
-
-		try {
-			if (dbConnection != null)
-				dbConnection.close();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-
-		}
+		closeQuietly(resultSet);
+		closeQuietly(pstmt);
+		closeQuietly(dbConnection);
 	}
 
+	private static void closeQuietly(AutoCloseable c) {
+		if (c != null) {
+			try { c.close(); } catch (Exception e) { e.printStackTrace(); }
+		}
+	}
 }
