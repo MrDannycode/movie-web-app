@@ -4,6 +4,7 @@
     boolean isLoggedIn    = (loggedUsername != null);
     String avatarLetter   = isLoggedIn && !loggedUsername.isEmpty()
                             ? String.valueOf(loggedUsername.charAt(0)).toUpperCase() : "U";
+    String loggedRole     = (String) session.getAttribute("role");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,6 +30,9 @@
       </div>
       <a href="listaFilme.jsp" class="nav-link">Movies</a>
       <a href="aboutUs.jsp"   class="nav-link active-link">About</a>
+      <% if ("SuperAdmin".equals(loggedRole)) { %>
+      <a href="UserManageServlet" class="nav-link">Manage Users</a>
+      <% } %>
     </nav>
 
     <div class="header-actions">

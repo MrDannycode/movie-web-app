@@ -40,6 +40,9 @@
       </div>
       <a href="listaFilme.jsp" class="nav-link">Movies</a>
       <a href="aboutUs.jsp"   class="nav-link">About</a>
+      <% if ("SuperAdmin".equals(loggedRole)) { %>
+      <a href="UserManageServlet" class="nav-link">Manage Users</a>
+      <% } %>
     </nav>
 
     <div class="header-actions">
