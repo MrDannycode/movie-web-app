@@ -15,27 +15,40 @@ public class UserDAO {
      * @return the User object if found, null otherwise.
      */
     public User login(String email, String password) {
-        Connection conn    = null;
+        Connection conn = null;
         PreparedStatement ps = null;
-        ResultSet rs       = null;
+        ResultSet rs = null;
 
-        String sql = "SELECT User_ID, User_Email, User_Username FROM user " +
+        // NOTE: We only select User_ID and User_Email here so that this query
+        // works even on older tables that may not have a User_Username column yet.
+        // User_Username is read separately below with a null-safe fallback.
+        String sql = "SELECT User_ID, User_Email FROM user " +
                      "WHERE User_Email = ? AND User_Parola = ?";
         try {
             conn = DBUtil.getConnection();
-            ps   = conn.prepareStatement(sql);
+            if (conn == null) {
+                System.err.println("UserDAO.login: could not get DB connection!");
+                return null;
+            }
+            ps = conn.prepareStatement(sql);
             ps.setString(1, email);
             ps.setString(2, password);
-            rs   = ps.executeQuery();
+            rs = ps.executeQuery();
 
             if (rs.next()) {
                 User u = new User();
                 u.setId(rs.getInt("User_ID"));
                 u.setEmail(rs.getString("User_Email"));
-                u.setUsername(rs.getString("User_Username"));
+                // Try to read username; fall back to email if column is absent
+                try {
+                    u.setUsername(rs.getString("User_Username"));
+                } catch (SQLException ignored) {
+                    u.setUsername(email); // fallback
+                }
                 return u;
             }
         } catch (SQLException e) {
+            System.err.println("UserDAO.login SQL error: " + e.getMessage());
             e.printStackTrace();
         } finally {
             DBUtil.closeAll(conn, ps, rs);

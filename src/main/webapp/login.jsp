@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign In – EasyWatch</title>
   <meta name="description" content="Sign in to your EasyWatch account and enjoy unlimited movies and TV shows.">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=2">
 </head>
 <body class="auth-page">
 
@@ -61,9 +61,8 @@
 
     <div class="auth-divider">or</div>
 
-    <div class="auth-switch">
-      Don't have an account?
-      <a href="register.jsp">Create one — it's free</a>
+    <div class="auth-switch" style="margin-top: 15px;">
+      <a href="register.jsp" class="btn">Create an account — it's free</a>
     </div>
 
   </div>

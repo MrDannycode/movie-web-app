@@ -13,7 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EasyWatch – Simple, Just Play</title>
   <meta name="description" content="EasyWatch is your go-to destination for movies and TV shows. Simple, fast, and always free.">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=2">
 </head>
 <body>
 
@@ -62,6 +62,31 @@
         <% } %>
       </div>
     </section>
+
+    <!-- Features strip -->
+    <div class="features-strip">
+      <div class="feature-item">
+        <div class="feature-icon">🎬</div>
+        <div class="feature-title">Huge Catalogue</div>
+        <div class="feature-desc">Thousands of titles across every genre</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Fast &amp; Simple</div>
+        <div class="feature-desc">No ads, no fuss. Just click and watch</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-title">Secure Accounts</div>
+        <div class="feature-desc">Your data is always safe with us</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">💸</div>
+        <div class="feature-title">Free Forever</div>
+        <div class="feature-desc">No credit card, no subscription needed</div>
+      </div>
+    </div>
+
   </main>
 
   <!-- ===== FOOTER ===== -->
