@@ -1,4 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="selirMovieWeb.Film" %>
+<%@ page import="java.util.HashSet" %>
+<%@ page import="selirMovieWeb.GestiuneFilme" %>
 <%
     String loggedUsername = (String) session.getAttribute("username");
     String loggedEmail    = (String) session.getAttribute("userEmail");
@@ -90,6 +93,47 @@
         <div class="feature-desc">No credit card, no subscription needed</div>
       </div>
     </div>
+
+    <!-- Featured Movies Grid -->
+    <section style="margin-top: 60px; width: 100%; max-width: 1200px;">
+      <h2 style="text-align: left; margin-bottom: 20px;">Featured Movies</h2>
+      <div class="movie-grid">
+        <%
+          try {
+              HashSet<Film> films = GestiuneFilme.getFilms();
+              int count = 0;
+              for (Film film : films) {
+                  if (count >= 5) break; // show up to 5 featured movies
+        %>
+        <div class="movie-card">
+          <div class="movie-poster-container">
+            <img src="https://picsum.photos/seed/<%= film.getId() %>/400/600" alt="<%= film.getDenumire() %> Poster" class="movie-poster" loading="lazy">
+            <a href="player.jsp?filmId=<%= film.getId() %>" class="movie-overlay">
+              <div class="play-button">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+            </a>
+          </div>
+          <div class="movie-info">
+            <div class="movie-title"><%= film.getDenumire() %></div>
+            <div class="movie-meta">
+              <span><%= film.getAnAparitie() %></span>
+              <span><%= film.getDurata() %> min</span>
+            </div>
+            <div class="movie-actions">
+              <a href="player.jsp?filmId=<%= film.getId() %>" class="btn btn-primary" style="flex:1; padding: 6px; font-size: 0.9rem;">Watch Now</a>
+            </div>
+          </div>
+        </div>
+        <%
+                  count++;
+              }
+          } catch (Exception e) {
+              out.println("<p>Error loading movies: " + e.getMessage() + "</p>");
+          }
+        %>
+      </div>
+    </section>
 
   </main>
 

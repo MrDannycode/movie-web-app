@@ -69,64 +69,59 @@
       </div>
     </div>
 
-    <!-- Movie table -->
-    <section class="table-section">
-      <div class="table-wrapper">
-        <table class="movie-table" id="movieTable">
-          <thead>
-            <tr>
-              <th class="col-id">#</th>
-              <th class="col-title">Title</th>
-              <th class="col-duration">Duration</th>
-              <th class="col-year">Year</th>
+    <!-- Movie Grid -->
+    <section class="table-section" style="padding: 0;">
+      <div class="movie-grid" id="movieGrid">
+        <%
+          try {
+            HashSet<Film> films = GestiuneFilme.getFilms();
+            for (Film film : films) {
+        %>
+        <div class="movie-card film-card-item">
+          <div class="movie-poster-container">
+            <img src="https://picsum.photos/seed/<%= film.getId() %>/400/600" alt="<%= film.getDenumire() %> Poster" class="movie-poster" loading="lazy">
+            <a href="player.jsp?filmId=<%= film.getId() %>" class="movie-overlay">
+              <div class="play-button">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+            </a>
+          </div>
+          <div class="movie-info">
+            <div class="movie-title film-title"><%= film.getDenumire() %></div>
+            <div class="movie-meta">
+              <span><%= film.getAnAparitie() %></span>
+              <span><%= film.getDurata() %> min</span>
+            </div>
+            <div class="movie-actions">
               <% if (isAdmin) { %>
-              <th class="col-actions">Actions</th>
+                <form action="editMoviepg.jsp" method="get" style="margin: 0; flex: 1;">
+                  <input type="hidden" name="filmId" value="<%= film.getId() %>">
+                  <button type="submit" class="btn btn-outline" style="width: 100%; padding: 6px; font-size: 0.85rem;">Edit</button>
+                </form>
+                <form action="MovieManageServlet" method="post" onsubmit="return confirm('Delete movie?');" style="margin: 0; flex: 1;">
+                  <input type="hidden" name="action" value="delete">
+                  <input type="hidden" name="filmId" value="<%= film.getId() %>">
+                  <button type="submit" class="btn btn-outline" style="width: 100%; padding: 6px; font-size: 0.85rem; color: #ff4d4d; border-color: #ff4d4d;">Delete</button>
+                </form>
+              <% } else { %>
+                <a href="player.jsp?filmId=<%= film.getId() %>" class="btn btn-primary" style="flex:1; padding: 6px; font-size: 0.9rem;">Watch Now</a>
               <% } %>
-            </tr>
-          </thead>
-          <tbody id="movieTableBody">
-            <%
-              HashSet<Film> films = GestiuneFilme.getFilms();
-              int rowIndex = 1;
-              for (Film film : films) {
-            %>
-            <tr>
-              <td class="col-id"><span class="row-num"><%= rowIndex++ %></span></td>
-              <td class="col-title">
-                <span class="film-title"><%= film.getDenumire() %></span>
-              </td>
-              <td class="col-duration">
-                <span class="duration-pill"><%= film.getDurata() %> min</span>
-              </td>
-              <td class="col-year"><%= film.getAnAparitie() %></td>
-              <% if (isAdmin) { %>
-              <td class="col-actions">
-                <div style="display: flex; gap: 8px;">
-                  <form action="editMoviepg.jsp" method="get" style="margin: 0;">
-                    <input type="hidden" name="filmId" value="<%= film.getId() %>">
-                    <button type="submit" class="btn btn-outline" style="padding: 4px 8px; font-size: 12px;">Edit</button>
-                  </form>
-                  <form action="MovieManageServlet" method="post" onsubmit="return confirm('Delete movie?');" style="margin: 0;">
-                    <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="filmId" value="<%= film.getId() %>">
-                    <button type="submit" class="btn btn-outline" style="padding: 4px 8px; font-size: 12px; color: #ff4d4d; border-color: #ff4d4d;">Delete</button>
-                  </form>
-                </div>
-              </td>
-              <% } %>
-            </tr>
-            <%
-              }
-            %>
-          </tbody>
-        </table>
-
-        <div class="table-empty" id="tableEmpty" style="display:none;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16" style="color:var(--text-muted);margin-bottom:12px;">
-            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.868-3.833zM2.5 6.5a4 4 0 1 1 8 0 4 4 0 0 1-8 0z"/>
-          </svg>
-          <p>No movies match your search.</p>
+            </div>
+          </div>
         </div>
+        <%
+            }
+          } catch (Exception e) {
+            out.println("<p>Error loading movies: " + e.getMessage() + "</p>");
+          }
+        %>
+      </div>
+
+      <div class="table-empty" id="tableEmpty" style="display:none; text-align: center; margin-top: 40px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16" style="color:var(--text-muted);margin-bottom:12px;">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.868-3.833zM2.5 6.5a4 4 0 1 1 8 0 4 4 0 0 1-8 0z"/>
+        </svg>
+        <p>No movies match your search.</p>
       </div>
     </section>
 
@@ -147,16 +142,16 @@
     /* Live filter */
     document.getElementById('tableSearch').addEventListener('input', function() {
       const q = this.value.toLowerCase();
-      const rows = document.querySelectorAll('#movieTableBody tr');
+      const cards = document.querySelectorAll('.film-card-item');
       let visible = 0;
-      rows.forEach(function(row) {
-        const title = row.querySelector('.film-title');
+      cards.forEach(function(card) {
+        const title = card.querySelector('.film-title');
         if (!title) return;
         const match = title.textContent.toLowerCase().includes(q);
-        row.style.display = match ? '' : 'none';
+        card.style.display = match ? 'flex' : 'none';
         if (match) visible++;
       });
-      document.getElementById('tableEmpty').style.display = visible === 0 ? 'flex' : 'none';
+      document.getElementById('tableEmpty').style.display = visible === 0 ? 'block' : 'none';
     });
   </script>
 
