@@ -59,9 +59,9 @@ public class RegisterServlet extends HttpServlet {
 
         // --- Register ---
         UserDAO dao     = new UserDAO();
-        boolean success = dao.register(username.trim(), email.trim(), password);
+        String result = dao.register(username.trim(), email.trim(), password);
 
-        if (success) {
+        if ("SUCCESS".equals(result)) {
             // Auto-login after registration
             User user = dao.login(email.trim(), password);
             if (user != null) {
@@ -71,8 +71,11 @@ public class RegisterServlet extends HttpServlet {
                 session.setAttribute("username",   user.getUsername());
             }
             response.sendRedirect("index.jsp");
-        } else {
+        } else if ("EMAIL_EXISTS".equals(result)) {
             request.setAttribute("errorMsg", "That email is already registered. Try logging in.");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+        } else {
+            request.setAttribute("errorMsg", "Database Error: " + result + ". Try checking the DB schema.");
             request.getRequestDispatcher("register.jsp").forward(request, response);
         }
     }

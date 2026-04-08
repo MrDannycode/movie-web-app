@@ -64,12 +64,12 @@ public class UserDAO {
 
     /**
      * Registers a new user.
-     * @return true if inserted successfully, false if email already exists or error.
+     * @return "SUCCESS", "EMAIL_EXISTS", or an error string.
      */
-    public boolean register(String username, String email, String password) {
+    public String register(String username, String email, String password) {
         // Check if email already taken
         if (emailExists(email)) {
-            return false;
+            return "EMAIL_EXISTS";
         }
 
         Connection conn    = null;
@@ -83,13 +83,13 @@ public class UserDAO {
             ps.setString(2, email);
             ps.setString(3, password);
             int rows = ps.executeUpdate();
-            return rows > 0;
+            return rows > 0 ? "SUCCESS" : "INSERT_FAILED";
         } catch (SQLException e) {
             e.printStackTrace();
+            return "DB_ERROR: " + e.getMessage();
         } finally {
             DBUtil.closeAll(conn, ps, null);
         }
-        return false;
     }
 
     /** Returns true if the given email already exists in the database. */
