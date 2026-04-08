@@ -15,7 +15,7 @@
             <title>EasyWatch – Simple, Just Play</title>
             <meta name="description"
               content="EasyWatch is your go-to destination for movies and TV shows. Simple, fast, and always free.">
-            <link rel="stylesheet" href="css/styles.css?v=3">
+            <link rel="stylesheet" href="css/styles.css?v=4">
           </head>
 
           <body>

@@ -80,12 +80,13 @@ public class GestiuneFilme {
         return null; // return null if an exception occurs or if no film was found
     }
 
-    public static boolean addFilm(Film film) {
+    public static boolean addFilm(Film film) throws SQLException {
         Connection conn = null;
         PreparedStatement ps = null;
         String sql = "INSERT INTO film (Film_Denumire, Film_Durata, Film_AnAparitie, Film_Imagine) VALUES (?, ?, ?, ?)";
         try {
             conn = DBUtil.getConnection();
+            if (conn == null) throw new SQLException("Could not connect to database (DBUtil returned null).");
             ps = conn.prepareStatement(sql);
             ps.setString(1, film.getDenumire());
             ps.setInt(2, film.getDurata());
@@ -93,12 +94,9 @@ public class GestiuneFilme {
             ps.setString(4, film.getImagine());
             int rows = ps.executeUpdate();
             return rows > 0;
-        } catch (SQLException e) {
-            System.err.println("GestiuneFilme.addFilm error: " + e.getMessage());
-            e.printStackTrace();
+        } finally {
+            DBUtil.closeAll(conn, ps, null);
         }
-        finally { DBUtil.closeAll(conn, ps, null); }
-        return false;
     }
 
     public static boolean updateFilm(Film film) {

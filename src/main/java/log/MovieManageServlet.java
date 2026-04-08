@@ -43,11 +43,16 @@ public class MovieManageServlet extends HttpServlet {
                 if (imagine == null || imagine.isEmpty()) imagine = "default.jpg";
 
                 Film f = new Film(0, denumire, durata, anAparitie, imagine);
-                if (GestiuneFilme.addFilm(f)) {
-                    session.setAttribute("msg", "Movie added successfully.");
-                    response.sendRedirect("addMoviepg.jsp");
-                } else {
-                    session.setAttribute("msg", "Error adding movie.");
+                try {
+                    if (GestiuneFilme.addFilm(f)) {
+                        session.setAttribute("msg", "Movie added successfully.");
+                        response.sendRedirect("addMoviepg.jsp");
+                    } else {
+                        session.setAttribute("msg", "Error: No rows were inserted.");
+                        response.sendRedirect("addMoviepg.jsp");
+                    }
+                } catch (java.sql.SQLException sqlEx) {
+                    session.setAttribute("msg", "Database Error: " + sqlEx.getMessage());
                     response.sendRedirect("addMoviepg.jsp");
                 }
             } else if ("update".equalsIgnoreCase(action)) {
