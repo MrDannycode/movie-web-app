@@ -8,6 +8,8 @@
     boolean isLoggedIn    = (loggedUsername != null);
     String avatarLetter   = isLoggedIn && !loggedUsername.isEmpty()
                             ? String.valueOf(loggedUsername.charAt(0)).toUpperCase() : "U";
+    String loggedRole     = (String) session.getAttribute("role");
+    boolean isAdmin       = "SuperAdmin".equals(loggedRole) || "MovieAdmin".equals(loggedRole);
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -58,7 +60,7 @@
         <span class="hero-badge">🎬 Full Catalogue</span>
         <h1>Browse Movies</h1>
         <p>Explore our entire collection — sort by any column to find your next watch.</p>
-        <% if (isLoggedIn) { %>
+        <% if (isAdmin) { %>
           <a href="addMoviepg.jsp" class="btn btn-primary" style="margin-top:8px;" id="addMovieBtn">+ Add Movie</a>
         <% } %>
       </div>
@@ -74,6 +76,9 @@
               <th class="col-title">Title</th>
               <th class="col-duration">Duration</th>
               <th class="col-year">Year</th>
+              <% if (isAdmin) { %>
+              <th class="col-actions">Actions</th>
+              <% } %>
             </tr>
           </thead>
           <tbody id="movieTableBody">
@@ -91,6 +96,21 @@
                 <span class="duration-pill"><%= film.getDurata() %> min</span>
               </td>
               <td class="col-year"><%= film.getAnAparitie() %></td>
+              <% if (isAdmin) { %>
+              <td class="col-actions">
+                <div style="display: flex; gap: 8px;">
+                  <form action="editMoviepg.jsp" method="get" style="margin: 0;">
+                    <input type="hidden" name="filmId" value="<%= film.getId() %>">
+                    <button type="submit" class="btn btn-outline" style="padding: 4px 8px; font-size: 12px;">Edit</button>
+                  </form>
+                  <form action="MovieManageServlet" method="post" onsubmit="return confirm('Delete movie?');" style="margin: 0;">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="filmId" value="<%= film.getId() %>">
+                    <button type="submit" class="btn btn-outline" style="padding: 4px 8px; font-size: 12px; color: #ff4d4d; border-color: #ff4d4d;">Delete</button>
+                  </form>
+                </div>
+              </td>
+              <% } %>
             </tr>
             <%
               }

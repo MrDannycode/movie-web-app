@@ -19,11 +19,9 @@ public class UserDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        // NOTE: We only select User_ID and User_Email here so that this query
-        // works even on older tables that may not have a User_Username column yet.
-        // User_Username is read separately below with a null-safe fallback.
-        String sql = "SELECT User_ID, User_Email FROM user " +
-                     "WHERE User_Email = ? AND User_Parola = ?";
+        // NOTE: We select * here so that we can try to read User_Username and User_Role
+        // without failing the query if the columns don't exist in older table structures.
+        String sql = "SELECT * FROM user WHERE User_Email = ? AND User_Parola = ?";
         try {
             conn = DBUtil.getConnection();
             if (conn == null) {
@@ -44,6 +42,14 @@ public class UserDAO {
                     u.setUsername(rs.getString("User_Username"));
                 } catch (SQLException ignored) {
                     u.setUsername(email); // fallback
+                }
+                
+                // Try to read role; fall back to USER if column is absent
+                try {
+                    String role = rs.getString("User_Role");
+                    u.setRole(role != null ? role : "USER");
+                } catch (SQLException ignored) {
+                    u.setRole("USER"); // fallback
                 }
                 return u;
             }
@@ -104,6 +110,72 @@ public class UserDAO {
         } finally {
             DBUtil.closeAll(conn, ps, rs);
         }
+        return false;
+    }
+
+    /**
+     * Gets all users (for SuperAdmin).
+     */
+    public java.util.List<User> getAllUsers() {
+        java.util.List<User> list = new java.util.ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = "SELECT * FROM user";
+        try {
+            conn = DBUtil.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("User_ID"));
+                u.setEmail(rs.getString("User_Email"));
+                try { u.setUsername(rs.getString("User_Username")); } catch (Exception e) { u.setUsername(u.getEmail()); }
+                try { 
+                    String role = rs.getString("User_Role");
+                    u.setRole(role != null ? role : "USER"); 
+                } catch (Exception e) { u.setRole("USER"); }
+                list.add(u);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        finally { DBUtil.closeAll(conn, ps, rs); }
+        return list;
+    }
+
+    /**
+     * Updates user's role (for SuperAdmin).
+     */
+    public boolean updateUserRole(int userId, String newRole) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        String sql = "UPDATE user SET User_Role = ? WHERE User_ID = ?";
+        try {
+            conn = DBUtil.getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, newRole);
+            ps.setInt(2, userId);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        finally { DBUtil.closeAll(conn, ps, null); }
+        return false;
+    }
+
+    /**
+     * Deletes user (for SuperAdmin).
+     */
+    public boolean deleteUser(int userId) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        String sql = "DELETE FROM user WHERE User_ID = ?";
+        try {
+            conn = DBUtil.getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, userId);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        finally { DBUtil.closeAll(conn, ps, null); }
         return false;
     }
 }

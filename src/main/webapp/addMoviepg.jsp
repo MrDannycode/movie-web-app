@@ -5,6 +5,13 @@
     String avatarLetter   = isLoggedIn && !loggedUsername.isEmpty()
                             ? String.valueOf(loggedUsername.charAt(0)).toUpperCase() : "U";
 
+    String loggedRole     = (String) session.getAttribute("role");
+    boolean isAdmin       = "SuperAdmin".equals(loggedRole) || "MovieAdmin".equals(loggedRole);
+    if (!isAdmin) {
+        response.sendRedirect("listaFilme.jsp");
+        return;
+    }
+
     /* Flash message from previous action */
     String msg = null;
     try { msg = session.getAttribute("msg").toString(); session.removeAttribute("msg"); } catch (Exception ex) {}
@@ -67,29 +74,24 @@
         </div>
       <% } %>
 
-      <form id="addMovieForm" action="addMovieto.jsp" method="post" novalidate>
+      <form id="addMovieForm" action="MovieManageServlet" method="post" novalidate>
+        <input type="hidden" name="action" value="add">
 
         <div class="form-group">
-          <label class="form-label" for="Film_ID">Film ID</label>
-          <input id="Film_ID" class="form-input" type="number" name="Film_ID"
-                 placeholder="e.g. 101" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="Film_Denumire">Movie Title</label>
-          <input id="Film_Denumire" class="form-input" type="text" name="Film_Denumire"
+          <label class="form-label" for="denumire">Movie Title</label>
+          <input id="denumire" class="form-input" type="text" name="denumire"
                  placeholder="e.g. Inception" required>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="Film_Durata">Duration (minutes)</label>
-          <input id="Film_Durata" class="form-input" type="number" name="Film_Durata"
+          <label class="form-label" for="durata">Duration (minutes)</label>
+          <input id="durata" class="form-input" type="number" name="durata"
                  placeholder="e.g. 148" required>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="Film_AnAparitie">Release Year</label>
-          <input id="Film_AnAparitie" class="form-input" type="number" name="Film_AnAparitie"
+          <label class="form-label" for="anAparitie">Release Year</label>
+          <input id="anAparitie" class="form-input" type="number" name="anAparitie"
                  placeholder="e.g. 2010" min="1888" max="2099" required>
         </div>
 

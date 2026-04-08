@@ -78,6 +78,55 @@ public class GestiuneFilme {
         return null; // return null if an exception occurs or if no film was found
     }
 
+    public static boolean addFilm(Film film) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        String sql = "INSERT INTO film (Film_Denumire, Film_Durata, Film_AnAparitie) VALUES (?, ?, ?)";
+        try {
+            conn = DBUtil.getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, film.getDenumire());
+            ps.setInt(2, film.getDurata());
+            ps.setInt(3, film.getAnAparitie());
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        finally { DBUtil.closeAll(conn, ps, null); }
+        return false;
+    }
+
+    public static boolean updateFilm(Film film) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        String sql = "UPDATE film SET Film_Denumire = ?, Film_Durata = ?, Film_AnAparitie = ? WHERE Film_ID = ?";
+        try {
+            conn = DBUtil.getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, film.getDenumire());
+            ps.setInt(2, film.getDurata());
+            ps.setInt(3, film.getAnAparitie());
+            ps.setInt(4, film.getId());
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        finally { DBUtil.closeAll(conn, ps, null); }
+        return false;
+    }
+
+    public static boolean deleteFilm(int filmId) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        String sql = "DELETE FROM film WHERE Film_ID = ?";
+        try {
+            conn = DBUtil.getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, filmId);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        finally { DBUtil.closeAll(conn, ps, null); }
+        return false;
+    }
 
 }
 
