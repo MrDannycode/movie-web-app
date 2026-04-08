@@ -26,7 +26,8 @@ public class MovieManageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        if (!isAuthorized(request.getSession(false))) {
+        HttpSession session = request.getSession();
+        if (!isAuthorized(session)) {
             response.sendRedirect("index.jsp");
             return;
         }
@@ -34,31 +35,43 @@ public class MovieManageServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         try {
-            if ("add".equals(action)) {
-                String den = request.getParameter("denumire");
+            if ("add".equalsIgnoreCase(action)) {
+                String denumire = request.getParameter("denumire");
                 int durata = Integer.parseInt(request.getParameter("durata"));
-                int anAp = Integer.parseInt(request.getParameter("anAparitie"));
-                
-                Film f = new Film(0, den, durata, anAp);
-                GestiuneFilme.addFilm(f);
+                int anAparitie = Integer.parseInt(request.getParameter("anAparitie"));
+                String imagine = request.getParameter("imagine");
+                if (imagine == null || imagine.isEmpty()) imagine = "default.jpg";
 
-            } else if ("update".equals(action)) {
+                Film f = new Film(0, denumire, durata, anAparitie, imagine);
+                if (GestiuneFilme.addFilm(f)) {
+                    session.setAttribute("msg", "Movie added successfully.");
+                    response.sendRedirect("addMoviepg.jsp");
+                } else {
+                    session.setAttribute("msg", "Error adding movie.");
+                    response.sendRedirect("addMoviepg.jsp");
+                }
+            } else if ("update".equalsIgnoreCase(action)) {
                 int id = Integer.parseInt(request.getParameter("filmId"));
-                String den = request.getParameter("denumire");
+                String denumire = request.getParameter("denumire");
                 int durata = Integer.parseInt(request.getParameter("durata"));
-                int anAp = Integer.parseInt(request.getParameter("anAparitie"));
-                
-                Film f = new Film(id, den, durata, anAp);
-                GestiuneFilme.updateFilm(f);
+                int anAparitie = Integer.parseInt(request.getParameter("anAparitie"));
+                String imagine = request.getParameter("imagine");
+                if (imagine == null || imagine.isEmpty()) imagine = "default.jpg";
 
+                Film f = new Film(id, denumire, durata, anAparitie, imagine);
+                if (GestiuneFilme.updateFilm(f)) {
+                    session.setAttribute("msg", "Movie updated successfully.");
+                } else {
+                    session.setAttribute("msg", "Error updating movie.");
+                }
+                response.sendRedirect("listaFilme.jsp");
             } else if ("delete".equals(action)) {
                 int id = Integer.parseInt(request.getParameter("filmId"));
                 GestiuneFilme.deleteFilm(id);
+                response.sendRedirect("listaFilme.jsp");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        response.sendRedirect("listaFilme.jsp");
     }
 }

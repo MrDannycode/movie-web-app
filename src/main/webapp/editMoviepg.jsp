@@ -52,6 +52,11 @@
         <input class="form-input" type="number" id="anAparitie" name="anAparitie" value="<%= film.getAnAparitie() %>" required>
       </div>
 
+      <div class="form-group">
+        <label class="form-label" for="imagine">Image Filename</label>
+        <input class="form-input" type="text" id="imagine" name="imagine" value="<%= film.getImagine() != null ? film.getImagine() : "" %>">
+      </div>
+
       <button type="submit" class="btn-auth">Save Changes</button>
       <div style="margin-top: 15px; text-align: center;">
          <a href="listaFilme.jsp" class="btn btn-outline" style="width: 100%; display: block; box-sizing: border-box; text-align: center;">Cancel</a>

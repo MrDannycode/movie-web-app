@@ -80,7 +80,7 @@
     <div class="player-container">
       <div class="video-wrapper">
         <!-- Using a placeholder open source video file: Big Buck Bunny -->
-        <video controls poster="https://picsum.photos/seed/<%= currentFilm.getId() %>/1280/720?blur=5">
+        <video controls poster="images/<%= currentFilm.getImagine() != null ? currentFilm.getImagine() : "default.jpg" %>">
           <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
           Your browser does not support the video tag.
         </video>

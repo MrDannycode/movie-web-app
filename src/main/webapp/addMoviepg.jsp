@@ -98,6 +98,12 @@
                  placeholder="e.g. 2010" min="1888" max="2099" required>
         </div>
 
+        <div class="form-group">
+          <label class="form-label" for="imagine">Image Filename</label>
+          <input id="imagine" class="form-input" type="text" name="imagine"
+                 placeholder="e.g. inception.jpg">
+        </div>
+
         <button id="addMovieBtn" type="submit" class="btn-auth">Add Movie</button>
       </form>
 

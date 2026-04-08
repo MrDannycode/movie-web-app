@@ -15,7 +15,7 @@ public class GestiuneFilme {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
-        String sql = "SELECT Film_ID, Film_Denumire, Film_Durata, Film_AnAparitie FROM film";
+        String sql = "SELECT Film_ID, Film_Denumire, Film_Durata, Film_AnAparitie, Film_Imagine FROM film";
 
         try {
             statement = conn.prepareStatement(sql);
@@ -23,11 +23,12 @@ public class GestiuneFilme {
 
             HashSet<Film> mySet = new HashSet<>();
             while (resultSet.next()) {
-                Film film = new Film(0, sql, 0, 0);
+                Film film = new Film(0, "", 0, 0, "");
                 film.id = resultSet.getInt("Film_ID");
                 film.denumire = resultSet.getString("Film_Denumire");
                 film.durata = resultSet.getInt("Film_Durata");
                 film.anAparitie = resultSet.getInt("Film_AnAparitie");
+                film.imagine = resultSet.getString("Film_Imagine");
                 mySet.add(film);
             }
 
@@ -55,7 +56,7 @@ public class GestiuneFilme {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
-        String sql = "SELECT Film_Denumire, Film_Durata, Film_AnAparitie FROM film WHERE Film_ID = ?";
+        String sql = "SELECT Film_Denumire, Film_Durata, Film_AnAparitie, Film_Imagine FROM film WHERE Film_ID = ?";
 
         try {
             statement = conn.prepareStatement(sql);
@@ -66,7 +67,8 @@ public class GestiuneFilme {
                 String denumire = resultSet.getString("Film_Denumire");
                 int durata = resultSet.getInt("Film_Durata");
                 int anAparitie = resultSet.getInt("Film_AnAparitie");
-                return new Film(id, denumire, durata, anAparitie);
+                String imagine = resultSet.getString("Film_Imagine");
+                return new Film(id, denumire, durata, anAparitie, imagine);
             }
 
         } catch (SQLException e) {
@@ -81,13 +83,14 @@ public class GestiuneFilme {
     public static boolean addFilm(Film film) {
         Connection conn = null;
         PreparedStatement ps = null;
-        String sql = "INSERT INTO film (Film_Denumire, Film_Durata, Film_AnAparitie) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO film (Film_Denumire, Film_Durata, Film_AnAparitie, Film_Imagine) VALUES (?, ?, ?, ?)";
         try {
             conn = DBUtil.getConnection();
             ps = conn.prepareStatement(sql);
             ps.setString(1, film.getDenumire());
             ps.setInt(2, film.getDurata());
             ps.setInt(3, film.getAnAparitie());
+            ps.setString(4, film.getImagine());
             int rows = ps.executeUpdate();
             return rows > 0;
         } catch (SQLException e) { e.printStackTrace(); }
@@ -98,14 +101,15 @@ public class GestiuneFilme {
     public static boolean updateFilm(Film film) {
         Connection conn = null;
         PreparedStatement ps = null;
-        String sql = "UPDATE film SET Film_Denumire = ?, Film_Durata = ?, Film_AnAparitie = ? WHERE Film_ID = ?";
+        String sql = "UPDATE film SET Film_Denumire = ?, Film_Durata = ?, Film_AnAparitie = ?, Film_Imagine = ? WHERE Film_ID = ?";
         try {
             conn = DBUtil.getConnection();
             ps = conn.prepareStatement(sql);
             ps.setString(1, film.getDenumire());
             ps.setInt(2, film.getDurata());
             ps.setInt(3, film.getAnAparitie());
-            ps.setInt(4, film.getId());
+            ps.setString(4, film.getImagine());
+            ps.setInt(5, film.getId());
             int rows = ps.executeUpdate();
             return rows > 0;
         } catch (SQLException e) { e.printStackTrace(); }

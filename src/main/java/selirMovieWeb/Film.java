@@ -7,6 +7,7 @@ public class Film {
     public String denumire;
     public int durata; // minute
     public int anAparitie;
+    public String imagine;
 
     public Film(int id, String denumire, int durata, int anAparitie) {
         super();
@@ -14,6 +15,11 @@ public class Film {
         this.denumire = denumire;
         this.durata = durata;
         this.anAparitie = anAparitie;
+    }
+
+    public Film(int id, String denumire, int durata, int anAparitie, String imagine) {
+        this(id, denumire, durata, anAparitie);
+        this.imagine = imagine;
     }
 
     public int getId() {
@@ -46,6 +52,14 @@ public class Film {
 
     public void setAnAparitie(int anAparitie) {
         this.anAparitie = anAparitie;
+    }
+
+    public String getImagine() {
+        return imagine;
+    }
+
+    public void setImagine(String imagine) {
+        this.imagine = imagine;
     }
 
 }

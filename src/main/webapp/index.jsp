@@ -107,7 +107,7 @@
         %>
         <div class="movie-card">
           <div class="movie-poster-container">
-            <img src="https://picsum.photos/seed/<%= film.getId() %>/400/600" alt="<%= film.getDenumire() %> Poster" class="movie-poster" loading="lazy">
+            <img src="images/<%= film.getImagine() != null ? film.getImagine() : "default.jpg" %>" alt="<%= film.getDenumire() %> Poster" class="movie-poster" loading="lazy">
             <a href="player.jsp?filmId=<%= film.getId() %>" class="movie-overlay">
               <div class="play-button">
                 <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
