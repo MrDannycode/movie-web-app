@@ -93,7 +93,10 @@ public class GestiuneFilme {
             ps.setString(4, film.getImagine());
             int rows = ps.executeUpdate();
             return rows > 0;
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            System.err.println("GestiuneFilme.addFilm error: " + e.getMessage());
+            e.printStackTrace();
+        }
         finally { DBUtil.closeAll(conn, ps, null); }
         return false;
     }

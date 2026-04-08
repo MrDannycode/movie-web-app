@@ -6,7 +6,7 @@
                             ? String.valueOf(loggedUsername.charAt(0)).toUpperCase() : "U";
 
     String loggedRole     = (String) session.getAttribute("role");
-    boolean isAdmin       = "SuperAdmin".equals(loggedRole) || "MovieAdmin".equals(loggedRole);
+    boolean isAdmin       = "SuperAdmin".equals(loggedRole) || "MovieAdmin".equals(loggedRole) || "AdminMovie".equals(loggedRole);
     if (!isAdmin) {
         response.sendRedirect("listaFilme.jsp");
         return;

@@ -19,7 +19,7 @@ public class MovieManageServlet extends HttpServlet {
     private boolean isAuthorized(HttpSession session) {
         if (session == null) return false;
         String role = (String) session.getAttribute("role");
-        return "SuperAdmin".equals(role) || "MovieAdmin".equals(role);
+        return "SuperAdmin".equals(role) || "MovieAdmin".equals(role) || "AdminMovie".equals(role);
     }
 
     @Override

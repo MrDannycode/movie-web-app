@@ -3,7 +3,7 @@
 <%@ page import="selirMovieWeb.GestiuneFilme" %>
 <%
     String loggedRole = (String) session.getAttribute("role");
-    if (!"SuperAdmin".equals(loggedRole) && !"MovieAdmin".equals(loggedRole)) {
+    if (!"SuperAdmin".equals(loggedRole) && !"MovieAdmin".equals(loggedRole) && !"AdminMovie".equals(loggedRole)) {
         response.sendRedirect("listaFilme.jsp");
         return;
     }

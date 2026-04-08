@@ -9,7 +9,7 @@
     String avatarLetter   = isLoggedIn && !loggedUsername.isEmpty()
                             ? String.valueOf(loggedUsername.charAt(0)).toUpperCase() : "U";
     String loggedRole     = (String) session.getAttribute("role");
-    boolean isAdmin       = "SuperAdmin".equals(loggedRole) || "MovieAdmin".equals(loggedRole);
+    boolean isAdmin       = "SuperAdmin".equals(loggedRole) || "MovieAdmin".equals(loggedRole) || "AdminMovie".equals(loggedRole);
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -140,18 +140,36 @@
 
   <script>
     /* Live filter */
-    document.getElementById('tableSearch').addEventListener('input', function() {
-      const q = this.value.toLowerCase();
-      const cards = document.querySelectorAll('.film-card-item');
+    const tableSearch = document.getElementById('tableSearch');
+    const movieGrid   = document.getElementById('movieGrid');
+    const tableEmpty  = document.getElementById('tableEmpty');
+    const cards       = document.querySelectorAll('.film-card-item');
+
+    function applyFilter(q) {
+      q = q.toLowerCase();
       let visible = 0;
-      cards.forEach(function(card) {
+      cards.forEach(card => {
         const title = card.querySelector('.film-title');
         if (!title) return;
         const match = title.textContent.toLowerCase().includes(q);
         card.style.display = match ? 'flex' : 'none';
         if (match) visible++;
       });
-      document.getElementById('tableEmpty').style.display = visible === 0 ? 'block' : 'none';
+      tableEmpty.style.display = (visible === 0 && cards.length > 0) ? 'block' : 'none';
+    }
+
+    tableSearch.addEventListener('input', function() {
+      applyFilter(this.value);
+    });
+
+    /* Check for search param on load */
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchQuery = urlParams.get('search');
+      if (searchQuery) {
+        tableSearch.value = searchQuery;
+        applyFilter(searchQuery);
+      }
     });
   </script>
 
